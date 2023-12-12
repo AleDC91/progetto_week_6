@@ -1,0 +1,16 @@
+@import "override_bootstrap";
+
+.title-container {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  background-color: greenyellow;
+  background-size: contain;
+}
+.create-product {
+  width: 400px;
+  margin-top: 3rem;
+  margin-bottom: 4rem;
+  @media screen and (max-width: 576px) {
+    width: 98%;
+  }
+}

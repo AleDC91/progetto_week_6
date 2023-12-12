@@ -1,0 +1,42 @@
+@import "bs_var_recall";        //   <--  in questo partial, metti tutte le variabili bi bootstrap già definite,
+                             //        ma che devono essere usate dalle tue variabili
+                             
+@import "custom_bs_variables";  //   <--  vai in questo file per aggiungere le tue variabili 
+                             //        che sovrascriveranno quelle di Bootstrap
+                             //        o per aggiungerne di nuove!
+
+@import "../../node_modules/bootstrap/scss/functions";  // IMPORTO LE FUNZIONI CHE MI SERVONO DOPO
+@import "../../node_modules/bootstrap/scss/mixins";     // IMPORTO I MIXINS CHE MI SERVONO DOPO
+@import "../../node_modules/bootstrap/scss/variables";  // QUESTE VANNO QUI PERCHÈ SE LE METTO PRIMA PRENDE QUELLE DI DEFAULT
+
+
+
+// ---------------------
+// ----MAPS MERGING-----
+// ---------------------
+// ***************************************************************************************
+// FAI QUI IL MERGE DELLE TUE MAPS CON  QUELLE DI BOOTSTRAP PER AGGIUNGERE FUNZIONALITÀ
+
+
+
+// ***************************************************************************************
+
+
+// import utilities partial to add or modify things using utilities API
+// and other partials used by utilities!!!
+
+@import "../../node_modules/bootstrap/scss/variables-dark";
+@import "../../node_modules/bootstrap/scss/maps";
+@import "../../node_modules/bootstrap/scss/utilities";
+
+
+// ---------------------
+// ----UTILITIES API----
+// ---------------------
+// ***************************************************************************************
+// USA QUI L'API UTILITIES
+
+
+// ***************************************************************************************
+
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";  // <--  importa le cose di default di bootstrap
