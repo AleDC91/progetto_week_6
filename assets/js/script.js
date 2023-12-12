@@ -12,8 +12,22 @@ class Product {
   }
   static total = 0;
 }
+// controllo inutile per vedere le diverse funzionalità
+// che ha admin. Non si fa così, ma intanto uso il localStorage 
+// e mi diverto un po'
 
-let admin = true;
+let admin = JSON.parse(sessionStorage.getItem("admin"));
+if (admin === null) {
+  let adminAsk = prompt("se sei admin, scrivi admin");
+  if (adminAsk.toLowerCase() === "admin") {
+    admin = true;
+    sessionStorage.setItem("admin", JSON.stringify(true));
+  } else {
+    admin = false;
+    sessionStorage.setItem("admin", JSON.stringify(false));
+  }
+} 
+
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -27,32 +41,40 @@ document.addEventListener("DOMContentLoaded", () => {
     let container = document.querySelector(".products");
 
     container.addEventListener("click", (e) => {
-// delete button
-      if(e.target.classList.contains("delete-btn")){
-        console.log(e.target.dataset.id)
-        deleteProduct(URI, e.target.dataset.id);
-      }
-// edit button
-      else if(e.target.classList.contains("edit-btn")){
+      // delete button
+      if (e.target.classList.contains("delete-btn")) {
         console.log(e.target.dataset.id);
-        window.location.href = `edit.html?id=${e.target.dataset.id}`
+        const confirmDelete = window.confirm(
+          "sei sicuro di eliminare questo prodotto?"
+        );
+        if (confirmDelete) {
+          deleteProduct(URI, e.target.dataset.id);
+        }
       }
-    })
-
-  }
-    else if(!admin && location.href.includes("index.html")){
+      // edit button
+      else if (e.target.classList.contains("edit-btn")) {
+        console.log(e.target.dataset.id);
+        window.location.href = `edit.html?id=${e.target.dataset.id}`;
+      }
+    });
+  } else if (!admin && location.href.includes("index.html")) {
     renderProducts(URI);
-    
-
   } else if (admin && location.href.includes("admin.html")) {
-
+    let resetButton = document.querySelector(".reset-btn");
+    resetButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      let confirmReset = window.confirm("Sicuro di voler resettare il form?");
+      if (confirmReset) {
+        document.forms[0].reset();
+      }
+    });
     let ul = document.querySelector("ul");
     let li = document.createElement("li");
     li.classList.add("nav-item");
     li.innerHTML = `<a class="nav-link bg-success rounded-2" href="index.html">Shop</a>`;
     ul.appendChild(li);
 
-    let createButton = document.querySelector("form button");
+    let createButton = document.querySelector(".submit-btn");
     // console.log(createButton);
 
     createButton.addEventListener("click", (e) => {
@@ -64,7 +86,8 @@ document.addEventListener("DOMContentLoaded", () => {
       let imageUrl = document.forms[0][5].value;
 
       if (
-        !isNaN(price) &&
+        (!isNaN(price)) &&
+        price > 0 &&
         productName.length > 2 &&
         productDescription.length > 2 &&
         imageUrl.startsWith("http")
@@ -82,25 +105,41 @@ document.addEventListener("DOMContentLoaded", () => {
         document.forms[0][3].value = "";
         document.forms[0][4].value = "";
         document.forms[0][5].value = "";
+      } else {
+
+        // UX pessima, da modificare con tooltip sopra i box di input meno invasivi
+        if( productName.length <= 2){
+          alert("il nome del prodotto deve avere almeno 3 lettere");
+        } 
+        if(productDescription.length <= 2){
+          alert("la descrizione deve avere almeno 3 lettere");
+        }
+        if(!imageUrl.startsWith("http")){
+          alert("l'URL dell'immagine deve iniziare con \"http\"");
+        }
+        if(isNaN(price) || price <= 0){
+          alert("il prezzo deve essere un numero positivo");
+        }
       }
     });
-
-
-
-  }
-
-  else if(admin && location.href.includes("edit.html")){
-
-
+  } else if (admin && location.href.includes("edit.html")) {
     let ul = document.querySelector("ul");
     let li = document.createElement("li");
     li.classList.add("nav-item");
     li.innerHTML = `<a class="nav-link bg-success rounded-2" href="index.html">Shop</a>`;
     ul.appendChild(li);
-    
-    let createButton = document.querySelector("form button");
+
+    let editButton = document.querySelector(".submit-btn");
     // console.log(createButton);
-    createButton.addEventListener("click", (e) => {
+    let resetButton = document.querySelector(".reset-btn");
+    resetButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      let confirmReset = window.confirm("Sicuro di voler resettare il form?");
+      if (confirmReset) {
+        document.forms[0].reset();
+      }
+    });
+    editButton.addEventListener("click", (e) => {
       e.preventDefault();
       let productName = document.forms[0][1].value;
       let productDescription = document.forms[0][2].value;
@@ -110,6 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (
         !isNaN(price) &&
+        price > 0 &&
         productName.length > 2 &&
         productDescription.length > 2 &&
         imageUrl.startsWith("http")
@@ -130,28 +170,43 @@ document.addEventListener("DOMContentLoaded", () => {
         document.forms[0][4].value = "";
         document.forms[0][5].value = "";
       }
+      else {
+
+        // UX pessima, da modificare con tooltip sopra i box di input meno invasivi
+        if( productName.length <= 2){
+          alert("il nome del prodotto deve avere almeno 3 lettere");
+        } 
+        if(productDescription.length <= 2){
+          alert("la descrizione deve avere almeno 3 lettere");
+        }
+        if(!imageUrl.startsWith("http")){
+          alert("l'URL dell'immagine deve iniziare con \"http\"");
+        }
+        if(isNaN(price) || price <= 0){
+          alert("il prezzo deve essere un numero positivo");
+        }
+      }
     });
+  } else if (admin && location.href.includes("product.html")) {
+    let ul = document.querySelector("ul");
+    let li = document.createElement("li");
+    li.classList.add("nav-item");
+    li.innerHTML = `<a class="nav-link bg-success rounded-2 me-2 text-white" href="index.html">Shop</a>`;
+    ul.appendChild(li);
+    let li2 = document.createElement("li");
+    li2.classList.add("nav-item");
+    li2.innerHTML = `<a class="nav-link bg-primary rounded-2 text-white" href="admin.html">Admin</a>`;
+    ul.appendChild(li2);
 
-
-  } else if(location.href.includes("product.html")){
     let searchParams = new URLSearchParams(window.location.search);
     let productId = searchParams.get("id");
     getProduct(URI, productId);
-
+  } else if (!admin && location.href.includes("product.html")) {
+    let searchParams = new URLSearchParams(window.location.search);
+    let productId = searchParams.get("id");
+    getProduct(URI, productId);
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
 
 function getAllProducts(uri) {
   fetch(uri, {
@@ -202,18 +257,21 @@ function deleteProduct(uri, id) {
     headers: {
       Authorization: `Bearer ${STRIVE_SCHOOL_API_KEY}`,
     },
-  }).then((response) => {
-    if (response.ok) {
-      msg("success", "Prodotto eliminato con successo!");
-      renderProducts(uri);
-    } else {
-      msg("error", "Errore! Prodotto non cancellato" + response.status);
-    }
   })
-  .catch((err) => msg("error", err));
+    .then((response) => {
+      if (response.ok) {
+        msg("success", "Prodotto eliminato con successo!");
+        renderProducts(uri);
+      } else {
+        msg("error", "Errore! Prodotto non cancellato" + response.status);
+      }
+    })
+    .catch((err) => msg("error", err));
 }
 
 function renderProducts(uri) {
+  let spinner = document.querySelector(".spinner-border");
+  spinner.style.display = "block"
   let productsContainer = document.querySelector(".products");
   productsContainer.innerHTML = "";
   fetch(uri, {
@@ -225,6 +283,7 @@ function renderProducts(uri) {
     .then((response) => response.json())
     .then((products) => {
       console.log(products);
+      spinner.style.display = "none";
       products.forEach((product) => {
         let card = document.createElement("div");
         card.classList.add(
@@ -239,15 +298,27 @@ function renderProducts(uri) {
           "shadow"
         );
         card.innerHTML = `
-                <img src=${product.imageUrl} class="card-img-top" alt="${product.name}">
+                <img src=${product.imageUrl} class="card-img-top" alt="${
+          product.name
+        }">
                 <div class="card-body">
                     <h5 class="card-title">${product.name}</h5>
                     <p class="card-text">${product.description}</p>
                     <h5>${product.price.toFixed(2)}€</h5>
-                    <a href="product.html?id=${product._id}" class="btn btn-primary w-100 mb-2" data-id=${product._id}">Vedi prodotto</a>
-                    <div class="admin-buttons d-flex justify-content-between" data-id=${product._id}>
-                    <button class="btn btn-danger delete-btn" data-id=${product._id}>elimina</button>
-                    <button class="btn btn-warning edit-btn" data-id=${product._id}>modifica</button>
+                    <a href="product.html?id=${
+                      product._id
+                    }" class="btn btn-primary w-100 mb-2" data-id=${
+          product._id
+        }">Vedi prodotto</a>
+                    <div class="admin-buttons d-flex justify-content-between" data-id=${
+                      product._id
+                    }>
+                    <button class="btn btn-danger delete-btn" data-id=${
+                      product._id
+                    }>elimina</button>
+                    <button class="btn btn-warning edit-btn" data-id=${
+                      product._id
+                    }>modifica</button>
                     </div>
                 </div>`;
         productsContainer.appendChild(card);
@@ -261,8 +332,8 @@ function msg(type, message) {
   msg.style.position = "fixed";
   msg.style.zIndex = 10;
   msg.style.width = "100%";
-  msg.style.margin = "0 auto"
-  msg.style.top = "50px"
+  msg.style.margin = "0 auto";
+  msg.style.top = "50px";
   if (type === "error") {
     msg.innerHTML = `<div class="alert alert-danger w-75 text-center mx-auto mt-2" role="alert">
                           Errore! ${message}
@@ -271,9 +342,7 @@ function msg(type, message) {
     setTimeout(() => {
       msg.innerHTML = "";
     }, 3000);
-
   } else if (type === "success") {
-
     msg.innerHTML = `<div class="alert alert-success w-75 text-center mx-auto mt-2" role="alert">
                           ${message}
                     </div>`;
@@ -282,20 +351,20 @@ function msg(type, message) {
     }, 3000);
   }
 }
-function hideButtons(){
+function hideButtons() {
   let cards = document.querySelectorAll(".card");
-  console.log(cards)
+  console.log(cards);
 
-  if(!admin){
-    cards.forEach(card => {
+  if (!admin) {
+    cards.forEach((card) => {
       let buttonsToHide = card.querySelector(".admin-buttons");
       // console.log(cards)
       buttonsToHide.innerHTML = "";
-    })
+    });
   }
 }
 
-function editProduct(uri, id, data){
+function editProduct(uri, id, data) {
   fetch(`${uri}/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
@@ -314,8 +383,9 @@ function editProduct(uri, id, data){
     .catch((err) => msg("error", err));
 }
 
-
-function showProduct(product){
+function showProduct(product) {
+  let spinner = document.querySelector(".spinner-border");
+  spinner.style.display = "block"
   let productContainer = document.querySelector(".product");
   let card = document.createElement("div");
   card.classList.add(
@@ -335,4 +405,5 @@ function showProduct(product){
               </div>
           </div>`;
   productContainer.appendChild(card);
+  spinner.style.display = "none"
 }

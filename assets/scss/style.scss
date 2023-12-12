@@ -3,20 +3,50 @@
 .title-container {
   padding-top: 3rem;
   padding-bottom: 3rem;
-  background-color: greenyellow;
-  background-size: contain;
+  background-image: url(https://57hours.com/wp-content/uploads/2019/04/climbing-header-4-1920x600.jpg);
+  background-size: fill;
+  @media screen and (max-width: 768px) {
+    font-weight: normal;
+    color: white;
+  }
+  h1 {
+    font-weight: bold;
+    font-size: 5rem;
+    padding-top: 4rem;
+  }
+
+  h3 {
+    padding-bottom: 3rem;
+  }
 }
 .create-product {
+  legend {
+    text-align: center;
+    text-transform: uppercase;
+  }
+  margin: 0 auto;
   width: 400px;
-  margin-top: 3rem;
+  margin-top: 2rem;
   margin-bottom: 4rem;
   @media screen and (max-width: 576px) {
     width: 98%;
   }
 }
 
-.msg{
+.msg {
   transition: all 0.5s linear;
-  
+}
 
+main {
+  padding-bottom: 4rem;
+  background: rgb(237, 149, 8);
+  background: linear-gradient(
+    148deg,
+    rgba(237, 149, 8, 0.8827906162464986) 0%,
+    rgba(50, 23, 7, 1) 100%
+  );
+  min-height: 100vh
+}
+body{
+  min-height: 100vh;
 }
